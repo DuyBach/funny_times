@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ###################################################################################################
 #!/usr/bin/env python                                                                             #
 #                                                                                                 #
@@ -16,7 +17,6 @@
 # limitations under the License.                                                                  #
 ###################################################################################################
 
-import logging
 from google.appengine.ext import endpoints
 from google.appengine.ext import ndb
 from protorpc import messages
@@ -32,22 +32,17 @@ class ItemList(messages.Message):
     items = messages.MessageField(Item, 1, repeated=True)
     items_bought = messages.MessageField(Item, 2, repeated=True)
     
-class Markets(messages.Message):
-    ids = messages.StringField(1, repeated=True)
-    
-###################################################################################################
-
 class ShoppingList(ndb.Model):
     user = ndb.StringProperty(required=True)
     items = ndb.StringProperty(repeated=True)
     items_bought = ndb.StringProperty(repeated=True)
- 
+    
 class FavMarket(ndb.Model):
     user = ndb.StringProperty(required=True)
     ids = ndb.StringProperty(repeated=True)
 
 ###################################################################################################
-   
+
 @endpoints.api(name='shoppingList', version='v1')
 class ShoppingListApi(remote.Service):
 
