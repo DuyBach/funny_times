@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ###################################################################################################
 #!/usr/bin/env python                                                                             #
 #                                                                                                 #
@@ -31,6 +30,8 @@ class Item(messages.Message):
 class ItemList(messages.Message):
     items = messages.MessageField(Item, 1, repeated=True)
     items_bought = messages.MessageField(Item, 2, repeated=True)
+    
+###################################################################################################
     
 class ShoppingList(ndb.Model):
     user = ndb.StringProperty(required=True)
