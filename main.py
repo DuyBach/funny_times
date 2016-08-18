@@ -24,16 +24,14 @@ import logging
 class Item(messages.Message):
     name = messages.StringField(1, required=True)
     
-class User(messages.Message):
-    name = messages.StringField(1, required=True)
-    
 class ItemList(messages.Message):
-    user = messages.MessageField(User, 1, required=True)
-    items = messages.MessageField(Item, 2, repeated=True)
+    items = messages.MessageField(Item, 1, repeated=True)
+    items_bought = messages.MessageField(Item, 2, repeated=True)
 
 class ShoppingList(ndb.Model):
     user = ndb.StringProperty(required=True)
     items = ndb.StringProperty(repeated=True)
+    items_bought = ndb.StringProperty(repeated=True)
 
 @endpoints.api(name='shoppingList', version='v1')
 class ShoppingListApi(remote.Service):
@@ -43,26 +41,47 @@ class ShoppingListApi(remote.Service):
                       path='Item',
                       http_method='POST')
     def insert_task(self, request):
-        query = ShoppingList.query(ShoppingList.user == request.user).get()
+        # DEBUG
+        if not endpoints.get_current_user().user_id():
+            user_id = '123456789'
+        else:
+            user_id = endpoints.get_current_user().user_id()
     
-        test_list = [item.name for item in request.items]  
+        query = ShoppingList.query(ShoppingList.user == user_id).get()
+    
+        items = [item.name for item in request.items] 
+        items_bought = [item.name for item in request.items_bought]
     
         if query:
-            query.items = test_list
+            query.items = items
+            query.items_bought = items_bought
             query.put()
         else:      
-            ShoppingList(user=request.user, items=test_list).put()
+            ShoppingList(user=user_id, items=items, items_bought=items_bought).put()
             
-    @endpoints.method(User, ItemList,
+        return request
+            
+    @endpoints.method(message_types.VoidMessage, ItemList,
                       name='Item.get',
                       path='Item',
                       http_method='GET')
     def list_task(self, request):
-        query = ShoppingList.query(ShoppingList.user == request.name).get()
+        # DEBUG
+        if not endpoints.get_current_user().user_id():
+            user_id = '123456789'
+        else:
+            user_id = endpoints.get_current_user().user_id()
+    
+        query = ShoppingList.query(ShoppingList.user == user_id).get()
         items = []
+        items_bought = []
+        
         for item in query.items:
             items.append(Item(name=item))
+            
+        for item_bought in query.items_bought:
+            items_bought.append(Item(name=item_bought))
         
-        return ItemList(user=User(name=query.user), items=items)
+        return ItemList(items=items, items_bought = items_bought)
 
 application = endpoints.api_server([ShoppingListApi])
