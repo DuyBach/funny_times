@@ -31,6 +31,9 @@ class ItemList(messages.Message):
     items = messages.MessageField(Item, 1, repeated=True)
     items_bought = messages.MessageField(Item, 2, repeated=True)
     
+class Markets(messages.Message):
+    ids = messages.StringField(1, repeated=True)
+    
 ###################################################################################################
     
 class ShoppingList(ndb.Model):
@@ -99,7 +102,7 @@ class ShoppingListApi(remote.Service):
         return ItemList(items=items, items_bought = items_bought)
         
         
-@endpoints.api(name='favMarket', version='v1')
+@endpoints.api(name='markets', version='v1')
 class FavMarketApi(remote.Service):
     
     @endpoints.method(Markets, Markets,
