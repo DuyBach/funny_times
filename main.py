@@ -47,7 +47,7 @@ class FavMarket(ndb.Model):
     ids = ndb.StringProperty(repeated=True)
 
 ###################################################################################################
-    
+   
 @endpoints.api(name='shoppingList', version='v1')
 class ShoppingListApi(remote.Service):
 
